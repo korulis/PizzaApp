@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+
 app = Flask(__name__)
 
 order = {"address": "S. Staneviciaus 14-28", "name": "Justinas"}
@@ -20,6 +21,8 @@ def getMember(name):
 
 print("sth default");
 print(__name__);
+
+app.run()
 
 ###! /usr/bin/python3
 ###print("Hello, world!")
