@@ -1,4 +1,6 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+from pymongo import MongoClient
+from pprint import pprint
 
 app = Flask(__name__)
 
@@ -11,8 +13,11 @@ def GetAll():
     m1 = jsonify(order)
     return m1
 
-@app.route("/test", methods=["POST"])
-def AddOne():
+@app.route("/test/<id>", methods=["POST"])
+def AddOne(id):
+    content = request.json
+    print(content)
+    print(id)
     return "testas"
 
 @app.route("/members/<string:name>/")
