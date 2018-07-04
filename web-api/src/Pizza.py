@@ -17,12 +17,6 @@ def GetAllOrders():
     print(all_docs)
     return jsonify(all_docs)
 
-
-
-
-order2 = Messenger(address = "Stanevicius", name = "Justinas")
-order2.orderRef = 1
-
 @app.route("/orders/<orderRef>", methods=["POST"])
 def CreateOne(orderRef):
     order = request.json
@@ -35,22 +29,16 @@ def CreateOne(orderRef):
     orderId = collection.insert_one(order).inserted_id
     return jsonify({"orderRef": orderRef}), 201
 
-@app.route("/test/<id>", methods=["POST"])
-def AddOne(id):
-    order = request.json
+@app.route("/orders/<orderRef>", methods=["DELETE"])
+def RemoveOne(orderRef):
+    target = collection.find_one({"orderRef": orderRef})
 
-    print(order)
-    print(id)
-    return "testas"
+    if(target is None):
+        return jsonify({}), 404
 
-@app.route("/members/<string:name>/")
-def getMember(name):
-    return name
+    collection.delete_one({"orderRef": orderRef})
+    return jsonify({"orderRef": orderRef}), 202
 
-print("sth default");
-print(__name__);
 
 app.run()
 
-###! /usr/bin/python3
-###print("Hello, world!")
