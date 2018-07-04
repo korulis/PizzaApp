@@ -11,11 +11,29 @@ client = MongoClient('localhost', 27017)
 db = client['test-database']
 collection = db['test-collection']
 
+@app.route("/orders/", methods=["DELETE"])
+def DeleteAll():
+    collection.delete_many({})
+
+    return jsonify({}), 200
+
+
 @app.route("/orders/")
 def GetAllOrders():
     all_docs = list(collection.find({}, {'_id': False}))
     print(all_docs)
     return jsonify(all_docs)
+
+
+@app.route("/orders/<orderRef>")
+def GetOne(orderRef):
+    doc = collection.find_one({"orderRef": orderRef}, {'_id': False})
+
+    if(doc is None):
+        return jsonify({}), 404
+
+    return jsonify(doc)
+
 
 @app.route("/orders/<orderRef>", methods=["POST"])
 def CreateOne(orderRef):
@@ -28,6 +46,17 @@ def CreateOne(orderRef):
 
     orderId = collection.insert_one(order).inserted_id
     return jsonify({"orderRef": orderRef}), 201
+
+
+@app.route("/orders/<orderRef>", methods=["PUT"])
+def UpdateOne(orderRef):
+    order = request.json
+    order["orderRef"] = orderRef
+
+    collection.update({"orderRef": orderRef}, order, True)
+
+    return jsonify({"orderRef": orderRef}), 202
+
 
 @app.route("/orders/<orderRef>", methods=["DELETE"])
 def RemoveOne(orderRef):
