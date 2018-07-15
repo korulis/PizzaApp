@@ -3,9 +3,11 @@ from flask import Flask, jsonify, request
 from pymongo import MongoClient
 from pprint import pprint
 from src.Messenger import Messenger
+from flask_cors import CORS, cross_origin
 import uuid
 
 app = Flask(__name__)
+cors = CORS(app)
 
 client = MongoClient('localhost', 27017)
 db = client['test-database']
@@ -19,6 +21,7 @@ def DeleteAll():
 
 
 @app.route("/orders/")
+@cross_origin()
 def GetAllOrders():
     all_docs = list(collection.find({}, {'_id': False}))
     print(all_docs)
@@ -36,6 +39,7 @@ def GetOne(orderRef):
 
 
 @app.route("/orders/<orderRef>", methods=["POST"])
+@cross_origin()
 def CreateOne(orderRef):
     order = request.json
     order["orderRef"] = orderRef
